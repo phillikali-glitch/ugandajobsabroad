@@ -1754,7 +1754,7 @@ async function submitForm() {
 
     `<table style="width:100%;border-collapse:collapse;">` +
 
-    section(0, 'Eligibility Check') +
+    htmlSection(0, 'Eligibility Check') +
     htmlRow('Ugandan Citizen', data.isUgandan === 'yes' ? 'Yes ✔' : data.isUgandan) +
     htmlRow('Date of Birth', data.dob) +
     htmlRow('ID Document Held', data.hasId === 'nin' ? 'National ID (NIN)' : data.hasId === 'passport' ? 'Passport' : data.hasId === 'both' ? 'NIN & Passport' : data.hasId) +
