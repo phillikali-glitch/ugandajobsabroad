@@ -1499,11 +1499,11 @@ async function submitForm() {
   // ── Build rich HTML email body for manager@terrysome.com ──
   const ts = new Date().toLocaleString('en-UG', { dateStyle: 'full', timeStyle: 'short' });
 
-  const row = (label, value) =>
+  const htmlRow = (label, value) =>
     `<tr><td style="padding:7px 12px;font-weight:700;color:#0d2b5e;width:38%;border-bottom:1px solid #eef1f7;font-size:13px;">${label}</td>` +
     `<td style="padding:7px 12px;border-bottom:1px solid #eef1f7;font-size:13px;color:#222;">${value || '<span style=color:#aaa>—</span>'}</td></tr>`;
 
-  const section = (num, title) =>
+  const htmlSection = (num, title) =>
     `<tr><td colspan="2" style="background:#0d2b5e;color:#f0a500;font-size:13px;font-weight:900;padding:9px 12px;letter-spacing:1px;text-transform:uppercase;">${num}. ${title}</td></tr>`;
 
   const yesNo = (val) => val
@@ -1529,85 +1529,85 @@ async function submitForm() {
     `<table style="width:100%;border-collapse:collapse;">` +
 
     // 1. Personal
-    section(1, 'Personal Details') +
-    row('Full Name', `<strong>${data.surname} ${data.otherNames}</strong>`) +
-    row('Sex', data.sex) +
-    row('Date of Birth', data.dob) +
-    row('Marital Status', data.marital) +
-    row('Religion', data.religion) +
-    row('Tribe', data.tribe) +
-    row('Clan', data.clan) +
-    row('No. of Children', data.numKids) +
+    htmlSection(1, 'Personal Details') +
+    htmlRow('Full Name', `<strong>${data.surname} ${data.otherNames}</strong>`) +
+    htmlRow('Sex', data.sex) +
+    htmlRow('Date of Birth', data.dob) +
+    htmlRow('Marital Status', data.marital) +
+    htmlRow('Religion', data.religion) +
+    htmlRow('Tribe', data.tribe) +
+    htmlRow('Clan', data.clan) +
+    htmlRow('No. of Children', data.numKids) +
 
     // 2. ID
-    section(2, 'Identification') +
-    row('NIN Number', data.ninNumber) +
-    row('Passport No.', data.passportNo) +
-    row('Nationality', data.nationality) +
+    htmlSection(2, 'Identification') +
+    htmlRow('NIN Number', data.ninNumber) +
+    htmlRow('Passport No.', data.passportNo) +
+    htmlRow('Nationality', data.nationality) +
 
     // 3. Contact
-    section(3, 'Contact Details') +
-    row('Phone', `<a href="tel:${data.phone}" style="color:#1a73c8;">${data.phone}</a>`) +
-    row('Email', data.email ? `<a href="mailto:${data.email}" style="color:#1a73c8;">${data.email}</a>` : '') +
+    htmlSection(3, 'Contact Details') +
+    htmlRow('Phone', `<a href="tel:${data.phone}" style="color:#1a73c8;">${data.phone}</a>`) +
+    htmlRow('Email', data.email ? `<a href="mailto:${data.email}" style="color:#1a73c8;">${data.email}</a>` : '') +
 
     // 4. Birth address
-    section(4, 'Place of Birth') +
-    row('Village', data.bornVillage) +
-    row('Parish', data.bornParish) +
-    row('Sub-County', data.bornSubcounty) +
-    row('District', data.bornDistrict) +
+    htmlSection(4, 'Place of Birth') +
+    htmlRow('Village', data.bornVillage) +
+    htmlRow('Parish', data.bornParish) +
+    htmlRow('Sub-County', data.bornSubcounty) +
+    htmlRow('District', data.bornDistrict) +
 
     // 5. Current address
-    section(5, 'Current Address') +
-    row('Village', data.liveVillage) +
-    row('Parish', data.liveParish) +
-    row('Sub-County', data.liveSubcounty) +
-    row('District', data.liveDistrict) +
+    htmlSection(5, 'Current Address') +
+    htmlRow('Village', data.liveVillage) +
+    htmlRow('Parish', data.liveParish) +
+    htmlRow('Sub-County', data.liveSubcounty) +
+    htmlRow('District', data.liveDistrict) +
 
     // 6. Father
-    section(6, "Father's Details") +
-    row('Name', `${data.fatherSurname} ${data.fatherOther}`) +
-    row('Status', data.fatherStatus) +
-    row('NIN', data.fatherNin) +
-    row('Phone', data.fatherPhone) +
-    row('District', data.fatherDistrict) +
+    htmlSection(6, "Father's Details") +
+    htmlRow('Name', `${data.fatherSurname} ${data.fatherOther}`) +
+    htmlRow('Status', data.fatherStatus) +
+    htmlRow('NIN', data.fatherNin) +
+    htmlRow('Phone', data.fatherPhone) +
+    htmlRow('District', data.fatherDistrict) +
 
     // 7. Mother
-    section(7, "Mother's Details") +
-    row('Name', `${data.motherSurname} ${data.motherOther}`) +
-    row('Status', data.motherStatus) +
-    row('NIN', data.motherNin) +
-    row('Phone', data.motherPhone) +
-    row('District', data.motherDistrict) +
+    htmlSection(7, "Mother's Details") +
+    htmlRow('Name', `${data.motherSurname} ${data.motherOther}`) +
+    htmlRow('Status', data.motherStatus) +
+    htmlRow('NIN', data.motherNin) +
+    htmlRow('Phone', data.motherPhone) +
+    htmlRow('District', data.motherDistrict) +
 
     // 8. Next of Kin
-    section(8, 'Next of Kin') +
-    row('Name', `${data.nokSurname} ${data.nokOther}`) +
-    row('Relationship', data.nokRelationship) +
-    row('Phone', `<a href="tel:${data.nokPhone}" style="color:#1a73c8;">${data.nokPhone}</a>`) +
-    row('NIN', data.nokNin) +
-    row('District', data.nokDistrict) +
+    htmlSection(8, 'Next of Kin') +
+    htmlRow('Name', `${data.nokSurname} ${data.nokOther}`) +
+    htmlRow('Relationship', data.nokRelationship) +
+    htmlRow('Phone', `<a href="tel:${data.nokPhone}" style="color:#1a73c8;">${data.nokPhone}</a>`) +
+    htmlRow('NIN', data.nokNin) +
+    htmlRow('District', data.nokDistrict) +
 
     // 9. Education
-    section(9, 'Education Background') +
-    row('Schools / Qualifications', data.education) +
+    htmlSection(9, 'Education Background') +
+    htmlRow('Schools / Qualifications', data.education) +
 
     // 10. Languages
-    section(10, 'Language Ratings') +
-    row('English', data.langEnglish) +
-    row('Arabic', data.langArabic) +
-    row('Luganda / Own Language', data.langLuganda) +
+    htmlSection(10, 'Language Ratings') +
+    htmlRow('English', data.langEnglish) +
+    htmlRow('Arabic', data.langArabic) +
+    htmlRow('Luganda / Own Language', data.langLuganda) +
 
     // 11. Declarations
-    section(11, 'Declarations') +
-    row('Applying voluntarily (own free will)', yesNo(data.dec_voluntary)) +
-    row('Family informed', yesNo(data.dec_family)) +
-    row('Aware of cultural differences abroad', yesNo(data.dec_culture)) +
-    row('No serious criminal record', yesNo(data.dec_criminal)) +
-    row('Good health declared', yesNo(data.dec_health)) +
-    row('Has worked abroad before', yesNo(data.dec_abroad)) +
-    row('Understands fees may apply', yesNo(data.dec_fees)) +
-    row('Understands interview/medical process', yesNo(data.dec_interview)) +
+    htmlSection(11, 'Declarations') +
+    htmlRow('Applying voluntarily (own free will)', yesNo(data.dec_voluntary)) +
+    htmlRow('Family informed', yesNo(data.dec_family)) +
+    htmlRow('Aware of cultural differences abroad', yesNo(data.dec_culture)) +
+    htmlRow('No serious criminal record', yesNo(data.dec_criminal)) +
+    htmlRow('Good health declared', yesNo(data.dec_health)) +
+    htmlRow('Has worked abroad before', yesNo(data.dec_abroad)) +
+    htmlRow('Understands fees may apply', yesNo(data.dec_fees)) +
+    htmlRow('Understands interview/medical process', yesNo(data.dec_interview)) +
 
     `</table>` +
 
