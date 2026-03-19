@@ -10,7 +10,7 @@
 <script>
   // EmailJS initialisation — replace YOUR_PUBLIC_KEY with the key from emailjs.com
   (function(){
-    emailjs.init({ publicKey: 'YOUR_PUBLIC_KEY' });
+    emailjs.init({ publicKey: '1CYMafSvWhBr9lY1k' });
   })();
 </script>
 <style>
@@ -1601,13 +1601,11 @@ Understands the process:       ${data.dec_interview ? 'YES' : 'No'}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `;
 
-  // ── EmailJS (free, no backend, supports attachments via base64) ──
-  // Service ID: service_terrysome | Template ID: template_terrysome_app
-  // Public Key set in init below. Manager must set these up at emailjs.com
+  // ── EmailJS — configured for Terrysome Investments Ltd ──
   try {
     await emailjs.send(
-      'service_terrysome',        // ← replace with your EmailJS Service ID
-      'template_terrysome_app',   // ← replace with your EmailJS Template ID
+      'service_0a30lbj',
+      'template_3uimf96',
       {
         to_email:    'manager@terrysome.com',
         from_name:   `${data.surname} ${data.otherNames}`,
