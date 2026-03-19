@@ -492,12 +492,79 @@ body {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ========== PERSON CARDS (Step 4) ========== */
+.person-card {
+  border-radius: 12px;
+  border: 2px solid var(--light-gray);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.father-card { border-top: 4px solid #1a73c8; }
+.mother-card { border-top: 4px solid #e91e8c; }
+.nok-card    { border-top: 4px solid var(--gold); }
+
+.person-card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 18px;
+  font-weight: 900;
+  font-size: 1rem;
+  color: var(--navy);
+  background: var(--off-white);
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.father-card .person-card-title { background: #f0f6ff; }
+.mother-card .person-card-title { background: #fff0f8; }
+.nok-card    .person-card-title { background: #fffbee; }
+
+.person-icon { font-size: 1.4rem; }
+
+.optional-tag {
+  margin-left: auto;
+  font-size: 0.72rem;
+  background: var(--light-gray);
+  color: var(--muted);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-weight: 700;
+}
+
+.required-tag {
+  margin-left: auto;
+  font-size: 0.72rem;
+  background: #fff0c2;
+  color: #b07000;
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-weight: 800;
+  border: 1px solid var(--gold);
+}
+
+.person-card-desc {
+  font-size: 0.87rem;
+  color: var(--muted);
+  padding: 10px 18px 0;
+  line-height: 1.55;
+  font-style: italic;
+}
+
+.person-card .form-grid { padding: 16px 18px; }
+
+/* Portrait grid — 2 columns on wide, 1 on narrow */
+.form-grid.portrait {
+  grid-template-columns: 1fr 1fr;
+}
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 600px) {
   .hero-photos { grid-template-columns: 1fr 1fr; }
   .hero-photos img:last-child { display: none; }
   .form-grid { grid-template-columns: 1fr; }
   .form-grid.triple { grid-template-columns: 1fr; }
+  .form-grid.portrait { grid-template-columns: 1fr; }
   .step-card { padding: 22px 18px; }
   .intro-section { padding: 24px 18px; }
   .hero-top { padding: 20px 18px 14px; }
@@ -757,117 +824,143 @@ body {
     <div class="step-header">
       <div class="step-number">4</div>
       <div>
-        <h3>Parent / Guardian Details</h3>
-  alert("Please fill in at least one parent name (Father or Mother) and complete the Next of Kin fields.");section-divider"><span>Father's Details</span></div>
-    <div class="form-grid">
-      <div class="field-group">
-        <label>Father's Surname</label>
-        <input type="text" id="fatherSurname" placeholder="Surname">
-      </div>
-      <div class="field-group">
-        <label>Father's Other Names</label>
-        <input type="text" id="fatherOther" placeholder="Other names">
-      </div>
-      <div class="field-group">
-        <label>Father's Status</label>
-        <select id="fatherStatus">
-          <option value="">-- Select --</option>
-          <option value="Alive">Alive</option>
-          <option value="Deceased">Deceased</option>
-          <option value="Unknown">Unknown</option>
-        </select>
-      </div>
-      <div class="field-group">
-        <label>Father's NIN (if known)</label>
-        <input type="text" id="fatherNin" placeholder="NIN number">
-      </div>
-      <div class="field-group">
-        <label>Father's Phone Number</label>
-        <input type="tel" id="fatherPhone" placeholder="e.g. 0712345678">
-      </div>
-      <div class="field-group">
-        <label>Father's District</label>
-        <input type="text" id="fatherDistrict" placeholder="District">
+        <h3>Family &amp; Next of Kin</h3>
+        <p>Fill in at least one parent fully, plus your next of kin contact</p>
       </div>
     </div>
 
-    <div class="section-divider"><span>Mother's Details</span></div>
-    <div class="form-grid">
-      <div class="field-group">
-        <label>Mother's Surname</label>
-        <input type="text" id="motherSurname" placeholder="Surname">
+    <!-- FATHER -->
+    <div class="person-card father-card">
+      <div class="person-card-title">
+        <span class="person-icon">👨</span>
+        <span>Father's Details</span>
+        <span class="optional-tag">Optional — fill if known</span>
       </div>
-      <div class="field-group">
-        <label>Mother's Other Names</label>
-        <input type="text" id="motherOther" placeholder="Other names">
-      </div>
-      <div class="field-group">
-        <label>Mother's Status</label>
-        <select id="motherStatus">
-          <option value="">-- Select --</option>
-          <option value="Alive">Alive</option>
-          <option value="Deceased">Deceased</option>
-          <option value="Unknown">Unknown</option>
-        </select>
-      </div>
-      <div class="field-group">
-        <label>Mother's NIN (if known)</label>
-        <input type="text" id="motherNin" placeholder="NIN number">
-      </div>
-      <div class="field-group">
-        <label>Mother's Phone Number</label>
-        <input type="tel" id="motherPhone" placeholder="e.g. 0712345678">
-      </div>
-      <div class="field-group">
-        <label>Mother's District</label>
-        <input type="text" id="motherDistrict" placeholder="District">
+      <div class="form-grid portrait">
+        <div class="field-group">
+          <label>Surname</label>
+          <input type="text" id="fatherSurname" placeholder="Father's surname">
+        </div>
+        <div class="field-group">
+          <label>Other Names</label>
+          <input type="text" id="fatherOther" placeholder="Other names">
+        </div>
+        <div class="field-group">
+          <label>Status</label>
+          <select id="fatherStatus">
+            <option value="">-- Select --</option>
+            <option value="Alive">Alive</option>
+            <option value="Deceased">Deceased</option>
+            <option value="Unknown">Unknown</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>NIN (if known)</label>
+          <input type="text" id="fatherNin" placeholder="National ID number">
+        </div>
+        <div class="field-group">
+          <label>Phone Number</label>
+          <input type="tel" id="fatherPhone" placeholder="e.g. 0712345678">
+        </div>
+        <div class="field-group">
+          <label>District</label>
+          <input type="text" id="fatherDistrict" placeholder="e.g. Kampala">
+        </div>
       </div>
     </div>
 
-    <div class="section-divider"><span>Next of Kin (Most Important Person to Contact If Anything Happens)</span></div>
-    <div class="form-grid">
-      <div class="field-group">
-        <label>Next of Kin — Surname <span class="req">*</span></label>
-        <input type="text" id="nokSurname" placeholder="Surname">
+    <!-- MOTHER -->
+    <div class="person-card mother-card">
+      <div class="person-card-title">
+        <span class="person-icon">👩</span>
+        <span>Mother's Details</span>
+        <span class="optional-tag">Optional — fill if known</span>
       </div>
-      <div class="field-group">
-        <label>Next of Kin — Other Names <span class="req">*</span></label>
-        <input type="text" id="nokOther" placeholder="Other names">
+      <div class="form-grid portrait">
+        <div class="field-group">
+          <label>Surname</label>
+          <input type="text" id="motherSurname" placeholder="Mother's surname">
+        </div>
+        <div class="field-group">
+          <label>Other Names</label>
+          <input type="text" id="motherOther" placeholder="Other names">
+        </div>
+        <div class="field-group">
+          <label>Status</label>
+          <select id="motherStatus">
+            <option value="">-- Select --</option>
+            <option value="Alive">Alive</option>
+            <option value="Deceased">Deceased</option>
+            <option value="Unknown">Unknown</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>NIN (if known)</label>
+          <input type="text" id="motherNin" placeholder="National ID number">
+        </div>
+        <div class="field-group">
+          <label>Phone Number</label>
+          <input type="tel" id="motherPhone" placeholder="e.g. 0712345678">
+        </div>
+        <div class="field-group">
+          <label>District</label>
+          <input type="text" id="motherDistrict" placeholder="e.g. Kampala">
+        </div>
       </div>
-      <div class="field-group">
-        <label>Relationship to You <span class="req">*</span></label>
-        <select id="nokRelationship">
-          <option value="">-- Select --</option>
-          <option value="Mother">Mother</option>
-          <option value="Father">Father</option>
-          <option value="Spouse">Spouse / Partner</option>
-          <option value="Sibling">Brother / Sister</option>
-          <option value="Uncle/Aunt">Uncle / Aunt</option>
-          <option value="Friend">Close Friend</option>
-          <option value="Other">Other</option>
-        </select>
+    </div>
+
+    <!-- NEXT OF KIN -->
+    <div class="person-card nok-card">
+      <div class="person-card-title">
+        <span class="person-icon">🤝</span>
+        <span>Next of Kin</span>
+        <span class="required-tag">Required</span>
       </div>
-      <div class="field-group">
-        <label>Next of Kin Phone Number <span class="req">*</span></label>
-        <input type="tel" id="nokPhone" placeholder="e.g. 0712345678">
-      </div>
-      <div class="field-group">
-        <label>Next of Kin NIN (if known)</label>
-        <input type="text" id="nokNin" placeholder="NIN number">
-      </div>
-      <div class="field-group">
-        <label>Next of Kin District <span class="req">*</span></label>
-        <input type="text" id="nokDistrict" placeholder="District">
+      <p class="person-card-desc">This is the person we call first if anything happens to you abroad. Choose someone who is always reachable.</p>
+      <div class="form-grid portrait">
+        <div class="field-group">
+          <label>Surname <span class="req">*</span></label>
+          <input type="text" id="nokSurname" placeholder="Surname">
+        </div>
+        <div class="field-group">
+          <label>Other Names <span class="req">*</span></label>
+          <input type="text" id="nokOther" placeholder="Other names">
+        </div>
+        <div class="field-group">
+          <label>How are they related to you? <span class="req">*</span></label>
+          <select id="nokRelationship">
+            <option value="">-- Select relationship --</option>
+            <option value="Mother">Mother</option>
+            <option value="Father">Father</option>
+            <option value="Spouse">Spouse / Partner</option>
+            <option value="Sibling">Brother / Sister</option>
+            <option value="Uncle/Aunt">Uncle / Aunt</option>
+            <option value="Friend">Close Friend</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Their Phone Number <span class="req">*</span></label>
+          <input type="tel" id="nokPhone" placeholder="e.g. 0712345678">
+        </div>
+        <div class="field-group">
+          <label>Their NIN (if known)</label>
+          <input type="text" id="nokNin" placeholder="National ID number">
+        </div>
+        <div class="field-group">
+          <label>Their District <span class="req">*</span></label>
+          <input type="text" id="nokDistrict" placeholder="e.g. Kampala">
+        </div>
       </div>
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-back" onclick="goStep(3)">← Back</button>
-      <button class="btn btn-next" onclick="validateAndGo(4, 5)">Next Step →</button>
+      <button class="btn btn-back" onclick="goStep(3)">&#8592; Back</button>
+      <button class="btn btn-next" onclick="validateAndGo(4, 5)">Next Step &#8594;</button>
     </div>
   </div>
 
-  <!-- STEP 5: EDUCATION & LANGUAGES -->
+<!-- STEP 5: EDUCATION & LANGUAGES -->
   <div class="step-card" id="step5">
     <div class="step-header">
       <div class="step-number">5</div>
@@ -880,7 +973,6 @@ body {
     <div class="section-divider"><span>Schools You Attended</span></div>
     <div id="eduContainer">
       <div class="edu-entry" id="edu0">
-        <button class="edu-remove" onclick="removeEdu(0)" title="Remove">✕</button>
         <div class="form-grid triple">
           <div class="field-group">
             <label>School Name</label>
@@ -1210,6 +1302,11 @@ function addEdu() {
 }
 
 function removeEdu(n) {
+  const entries = document.querySelectorAll('.edu-entry');
+  if (entries.length <= 1) {
+    alert('You need at least one education entry. Clear the fields instead.');
+    return;
+  }
   const el = document.getElementById('edu' + n);
   if (el) el.remove();
 }
