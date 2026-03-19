@@ -758,11 +758,7 @@ body {
       <div class="step-number">4</div>
       <div>
         <h3>Parent / Guardian Details</h3>
-        <p>Fill in at least one parent or guardian fully</p>
-      </div>
-    </div>
-
-    <div class="section-divider"><span>Father's Details</span></div>
+  alert("Please fill in at least one parent name (Father or Mother) and complete the Next of Kin fields.");section-divider"><span>Father's Details</span></div>
     <div class="form-grid">
       <div class="field-group">
         <label>Father's Surname</label>
@@ -1170,7 +1166,7 @@ function validateAndGo(from, to) {
     const motherName = document.getElementById('motherSurname').value.trim();
     if (!fatherName && !motherName) {
       ok = false;
-      alert('Please fill in at least one parent's name (Father or Mother) and complete all Next of Kin fields.');
+      alert("Please fill in at least one parent name (Father or Mother) and complete all Next of Kin fields.");
       return;
     }
     if (!ok) { alert('Please complete all Next of Kin fields (marked with *).'); return; }
