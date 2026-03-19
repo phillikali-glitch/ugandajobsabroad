@@ -1492,114 +1492,133 @@ async function submitForm() {
   doc.setFontSize(8);
   doc.text('Terrysome Investments Ltd | Balintuma Road, Mengo, Kampala | 0706496674 | manager@terrysome.com | www.terrysome.com', 105, 290, {align: 'center'});
 
-  // Generate PDF as base64 string for attachment
-  const pdfBase64 = doc.output('datauristring').split(',')[1];
+  // Save PDF to applicant's device
   const pdfFilename = `Terrysome_Application_${data.surname}_${data.otherNames}.pdf`.replace(/\s+/g, '_');
-
-  // Always download a copy to the applicant's device
   doc.save(pdfFilename);
 
-  // Build a readable email body
-  const emailBody = `
-NEW JOB ABROAD APPLICATION — TERRYSOME INVESTMENTS LTD
-Submitted: ${new Date().toLocaleString()}
+  // ── Build rich HTML email body for manager@terrysome.com ──
+  const ts = new Date().toLocaleString('en-UG', { dateStyle: 'full', timeStyle: 'short' });
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. PERSONAL DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Full Name:        ${data.surname} ${data.otherNames}
-Sex:              ${data.sex}
-Date of Birth:    ${data.dob}
-Marital Status:   ${data.marital}
-Religion:         ${data.religion}
-Tribe:            ${data.tribe}
-Clan:             ${data.clan}
-No. of Children:  ${data.numKids}
+  const row = (label, value) =>
+    `<tr><td style="padding:7px 12px;font-weight:700;color:#0d2b5e;width:38%;border-bottom:1px solid #eef1f7;font-size:13px;">${label}</td>` +
+    `<td style="padding:7px 12px;border-bottom:1px solid #eef1f7;font-size:13px;color:#222;">${value || '<span style=color:#aaa>—</span>'}</td></tr>`;
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-2. IDENTIFICATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-NIN Number:       ${data.ninNumber || '—'}
-Passport No:      ${data.passportNo || '—'}
-Nationality:      ${data.nationality}
+  const section = (num, title) =>
+    `<tr><td colspan="2" style="background:#0d2b5e;color:#f0a500;font-size:13px;font-weight:900;padding:9px 12px;letter-spacing:1px;text-transform:uppercase;">${num}. ${title}</td></tr>`;
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3. CONTACT
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Phone:            ${data.phone}
-Email:            ${data.email || '—'}
+  const yesNo = (val) => val
+    ? '<span style="color:#2dc653;font-weight:900;">✔ YES</span>'
+    : '<span style="color:#aaa;">No</span>';
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-4. PLACE OF BIRTH
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Village:          ${data.bornVillage}
-Parish:           ${data.bornParish}
-Sub-County:       ${data.bornSubcounty}
-District:         ${data.bornDistrict}
+  const htmlBody =
+    `<div style="font-family:Arial,sans-serif;max-width:680px;margin:0 auto;border:1px solid #dde3f0;border-radius:10px;overflow:hidden;">` +
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-5. CURRENT ADDRESS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Village:          ${data.liveVillage}
-Parish:           ${data.liveParish}
-Sub-County:       ${data.liveSubcounty}
-District:         ${data.liveDistrict}
+    // Header
+    `<div style="background:#0d2b5e;padding:24px 28px;text-align:center;">` +
+    `<div style="color:#f0a500;font-size:22px;font-weight:900;letter-spacing:2px;">TERRYSOME INVESTMENTS LTD</div>` +
+    `<div style="color:#fff;font-size:13px;margin-top:4px;">New Job Abroad — Applicant Registration</div>` +
+    `<div style="color:#f0a500;font-size:12px;margin-top:6px;opacity:0.85;">Submitted: ${ts}</div>` +
+    `</div>` +
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-6. FATHER
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Name:             ${data.fatherSurname} ${data.fatherOther}
-Status:           ${data.fatherStatus || '—'}
-NIN:              ${data.fatherNin || '—'}
-Phone:            ${data.fatherPhone || '—'}
-District:         ${data.fatherDistrict || '—'}
+    // Alert banner
+    `<div style="background:#fff8e7;border-bottom:2px solid #f0a500;padding:12px 20px;font-size:13px;color:#7a5000;">` +
+    `<strong>📋 New applicant registered via the Terrysome online portal.</strong> All details are below. ` +
+    `The applicant's phone is <strong>${data.phone}</strong>.` +
+    `</div>` +
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-7. MOTHER
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Name:             ${data.motherSurname} ${data.motherOther}
-Status:           ${data.motherStatus || '—'}
-NIN:              ${data.motherNin || '—'}
-Phone:            ${data.motherPhone || '—'}
-District:         ${data.motherDistrict || '—'}
+    `<table style="width:100%;border-collapse:collapse;">` +
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-8. NEXT OF KIN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Name:             ${data.nokSurname} ${data.nokOther}
-Relationship:     ${data.nokRelationship}
-Phone:            ${data.nokPhone}
-NIN:              ${data.nokNin || '—'}
-District:         ${data.nokDistrict}
+    // 1. Personal
+    section(1, 'Personal Details') +
+    row('Full Name', `<strong>${data.surname} ${data.otherNames}</strong>`) +
+    row('Sex', data.sex) +
+    row('Date of Birth', data.dob) +
+    row('Marital Status', data.marital) +
+    row('Religion', data.religion) +
+    row('Tribe', data.tribe) +
+    row('Clan', data.clan) +
+    row('No. of Children', data.numKids) +
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-9. EDUCATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-${data.education}
+    // 2. ID
+    section(2, 'Identification') +
+    row('NIN Number', data.ninNumber) +
+    row('Passport No.', data.passportNo) +
+    row('Nationality', data.nationality) +
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-10. LANGUAGE RATINGS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-English:          ${data.langEnglish}
-Arabic:           ${data.langArabic}
-Luganda/Own Lang: ${data.langLuganda}
+    // 3. Contact
+    section(3, 'Contact Details') +
+    row('Phone', `<a href="tel:${data.phone}" style="color:#1a73c8;">${data.phone}</a>`) +
+    row('Email', data.email ? `<a href="mailto:${data.email}" style="color:#1a73c8;">${data.email}</a>` : '') +
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-11. DECLARATIONS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Applying voluntarily:          ${data.dec_voluntary ? 'YES' : 'No'}
-Family informed:               ${data.dec_family ? 'YES' : 'No'}
-Aware of cultural differences: ${data.dec_culture ? 'YES' : 'No'}
-No serious criminal record:    ${data.dec_criminal ? 'YES' : 'No'}
-Good health:                   ${data.dec_health ? 'YES' : 'No'}
-Has worked abroad before:      ${data.dec_abroad ? 'YES' : 'No'}
-Understands fees may apply:    ${data.dec_fees ? 'YES' : 'No'}
-Understands the process:       ${data.dec_interview ? 'YES' : 'No'}
+    // 4. Birth address
+    section(4, 'Place of Birth') +
+    row('Village', data.bornVillage) +
+    row('Parish', data.bornParish) +
+    row('Sub-County', data.bornSubcounty) +
+    row('District', data.bornDistrict) +
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-** The full application is attached as a PDF. **
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-`;
+    // 5. Current address
+    section(5, 'Current Address') +
+    row('Village', data.liveVillage) +
+    row('Parish', data.liveParish) +
+    row('Sub-County', data.liveSubcounty) +
+    row('District', data.liveDistrict) +
+
+    // 6. Father
+    section(6, "Father's Details") +
+    row('Name', `${data.fatherSurname} ${data.fatherOther}`) +
+    row('Status', data.fatherStatus) +
+    row('NIN', data.fatherNin) +
+    row('Phone', data.fatherPhone) +
+    row('District', data.fatherDistrict) +
+
+    // 7. Mother
+    section(7, "Mother's Details") +
+    row('Name', `${data.motherSurname} ${data.motherOther}`) +
+    row('Status', data.motherStatus) +
+    row('NIN', data.motherNin) +
+    row('Phone', data.motherPhone) +
+    row('District', data.motherDistrict) +
+
+    // 8. Next of Kin
+    section(8, 'Next of Kin') +
+    row('Name', `${data.nokSurname} ${data.nokOther}`) +
+    row('Relationship', data.nokRelationship) +
+    row('Phone', `<a href="tel:${data.nokPhone}" style="color:#1a73c8;">${data.nokPhone}</a>`) +
+    row('NIN', data.nokNin) +
+    row('District', data.nokDistrict) +
+
+    // 9. Education
+    section(9, 'Education Background') +
+    row('Schools / Qualifications', data.education) +
+
+    // 10. Languages
+    section(10, 'Language Ratings') +
+    row('English', data.langEnglish) +
+    row('Arabic', data.langArabic) +
+    row('Luganda / Own Language', data.langLuganda) +
+
+    // 11. Declarations
+    section(11, 'Declarations') +
+    row('Applying voluntarily (own free will)', yesNo(data.dec_voluntary)) +
+    row('Family informed', yesNo(data.dec_family)) +
+    row('Aware of cultural differences abroad', yesNo(data.dec_culture)) +
+    row('No serious criminal record', yesNo(data.dec_criminal)) +
+    row('Good health declared', yesNo(data.dec_health)) +
+    row('Has worked abroad before', yesNo(data.dec_abroad)) +
+    row('Understands fees may apply', yesNo(data.dec_fees)) +
+    row('Understands interview/medical process', yesNo(data.dec_interview)) +
+
+    `</table>` +
+
+    // Footer
+    `<div style="background:#0d2b5e;padding:14px 20px;text-align:center;font-size:11px;color:rgba(255,255,255,0.6);">` +
+    `Terrysome Investments Ltd &nbsp;|&nbsp; Balintuma Road, Mengo, Kampala &nbsp;|&nbsp; ` +
+    `<a href="tel:0706496674" style="color:#f0a500;">0706496674</a> &nbsp;|&nbsp; ` +
+    `<a href="mailto:manager@terrysome.com" style="color:#f0a500;">manager@terrysome.com</a> &nbsp;|&nbsp; ` +
+    `<a href="http://www.terrysome.com" style="color:#f0a500;">www.terrysome.com</a>` +
+    `</div>` +
+    `</div>`;
 
   // ── EmailJS — configured for Terrysome Investments Ltd ──
   try {
@@ -1607,15 +1626,13 @@ Understands the process:       ${data.dec_interview ? 'YES' : 'No'}
       'service_0a30lbj',
       'template_3uimf96',
       {
-        to_email:    'manager@terrysome.com',
-        from_name:   `${data.surname} ${data.otherNames}`,
-        reply_to:    data.email || 'noreply@terrysome.com',
-        subject:     `New Application — ${data.surname} ${data.otherNames} | ${data.phone}`,
-        message:     emailBody,
-        pdf_base64:  pdfBase64,
-        pdf_name:    pdfFilename,
-        applicant_phone: data.phone,
-        applicant_name:  `${data.surname} ${data.otherNames}`
+        to_email:        'manager@terrysome.com',
+        from_name:       `${data.surname} ${data.otherNames}`,
+        reply_to:        data.email || 'noreply@terrysome.com',
+        subject:         `New Application — ${data.surname} ${data.otherNames} | ${data.phone}`,
+        message_html:    htmlBody,
+        applicant_name:  `${data.surname} ${data.otherNames}`,
+        applicant_phone: data.phone
       }
     );
 
@@ -1624,7 +1641,7 @@ Understands the process:       ${data.dec_interview ? 'YES' : 'No'}
     showOverlay(
       '🎉',
       'Application Sent!',
-      `Thank you, ${data.surname}! Your application (including the PDF) has been sent to the Terrysome team. They will call you on ${data.phone} within 2–3 working days. A copy of your form has also been saved to your device.`
+      `Thank you, ${data.surname}! Your application has been sent to the Terrysome team. They will call you on ${data.phone} within 2–3 working days. A copy of your form has been saved to your device as a PDF.`
     );
 
   } catch(err) {
@@ -1632,9 +1649,9 @@ Understands the process:       ${data.dec_interview ? 'YES' : 'No'}
     btn.disabled = false;
     btn.innerHTML = '📤 SEND MY APPLICATION';
     showOverlay(
-      '📄',
-      'PDF Saved — Please Send Manually',
-      `Your completed application has been saved as a PDF on your device (${pdfFilename}). Please WhatsApp or email it to manager@terrysome.com, or call 0706496674 to submit it. We are sorry for the inconvenience!`
+      '⚠️',
+      'Sending Failed — Save Your PDF',
+      `Your application could not be sent automatically. Your filled form has been saved as a PDF on your device (${pdfFilename}). Please email it to manager@terrysome.com or call 0706496674 to complete your submission.`
     );
   }
 }
