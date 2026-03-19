@@ -6,6 +6,13 @@
 <title>Terrysome Investments Ltd – Apply for Jobs Abroad</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // EmailJS initialisation — replace YOUR_PUBLIC_KEY with the key from emailjs.com
+  (function(){
+    emailjs.init({ publicKey: 'YOUR_PUBLIC_KEY' });
+  })();
+</script>
 <style>
 :root {
   --navy: #0d2b5e;
@@ -1485,52 +1492,152 @@ async function submitForm() {
   doc.setFontSize(8);
   doc.text('Terrysome Investments Ltd | Balintuma Road, Mengo, Kampala | 0706496674 | manager@terrysome.com | www.terrysome.com', 105, 290, {align: 'center'});
 
+  // Generate PDF as base64 string for attachment
   const pdfBase64 = doc.output('datauristring').split(',')[1];
+  const pdfFilename = `Terrysome_Application_${data.surname}_${data.otherNames}.pdf`.replace(/\s+/g, '_');
 
-  // Send via EmailJS-style fetch (using mailto: fallback since no backend)
-  // We'll use a web3forms or formsubmit approach
+  // Always download a copy to the applicant's device
+  doc.save(pdfFilename);
+
+  // Build a readable email body
+  const emailBody = `
+NEW JOB ABROAD APPLICATION — TERRYSOME INVESTMENTS LTD
+Submitted: ${new Date().toLocaleString()}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. PERSONAL DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Full Name:        ${data.surname} ${data.otherNames}
+Sex:              ${data.sex}
+Date of Birth:    ${data.dob}
+Marital Status:   ${data.marital}
+Religion:         ${data.religion}
+Tribe:            ${data.tribe}
+Clan:             ${data.clan}
+No. of Children:  ${data.numKids}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. IDENTIFICATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NIN Number:       ${data.ninNumber || '—'}
+Passport No:      ${data.passportNo || '—'}
+Nationality:      ${data.nationality}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. CONTACT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Phone:            ${data.phone}
+Email:            ${data.email || '—'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. PLACE OF BIRTH
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Village:          ${data.bornVillage}
+Parish:           ${data.bornParish}
+Sub-County:       ${data.bornSubcounty}
+District:         ${data.bornDistrict}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. CURRENT ADDRESS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Village:          ${data.liveVillage}
+Parish:           ${data.liveParish}
+Sub-County:       ${data.liveSubcounty}
+District:         ${data.liveDistrict}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. FATHER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Name:             ${data.fatherSurname} ${data.fatherOther}
+Status:           ${data.fatherStatus || '—'}
+NIN:              ${data.fatherNin || '—'}
+Phone:            ${data.fatherPhone || '—'}
+District:         ${data.fatherDistrict || '—'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. MOTHER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Name:             ${data.motherSurname} ${data.motherOther}
+Status:           ${data.motherStatus || '—'}
+NIN:              ${data.motherNin || '—'}
+Phone:            ${data.motherPhone || '—'}
+District:         ${data.motherDistrict || '—'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+8. NEXT OF KIN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Name:             ${data.nokSurname} ${data.nokOther}
+Relationship:     ${data.nokRelationship}
+Phone:            ${data.nokPhone}
+NIN:              ${data.nokNin || '—'}
+District:         ${data.nokDistrict}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+9. EDUCATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${data.education}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+10. LANGUAGE RATINGS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+English:          ${data.langEnglish}
+Arabic:           ${data.langArabic}
+Luganda/Own Lang: ${data.langLuganda}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+11. DECLARATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Applying voluntarily:          ${data.dec_voluntary ? 'YES' : 'No'}
+Family informed:               ${data.dec_family ? 'YES' : 'No'}
+Aware of cultural differences: ${data.dec_culture ? 'YES' : 'No'}
+No serious criminal record:    ${data.dec_criminal ? 'YES' : 'No'}
+Good health:                   ${data.dec_health ? 'YES' : 'No'}
+Has worked abroad before:      ${data.dec_abroad ? 'YES' : 'No'}
+Understands fees may apply:    ${data.dec_fees ? 'YES' : 'No'}
+Understands the process:       ${data.dec_interview ? 'YES' : 'No'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+** The full application is attached as a PDF. **
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`;
+
+  // ── EmailJS (free, no backend, supports attachments via base64) ──
+  // Service ID: service_terrysome | Template ID: template_terrysome_app
+  // Public Key set in init below. Manager must set these up at emailjs.com
   try {
-    const formData = new FormData();
-    formData.append('access_key', 'terrysome-form'); // placeholder
-    formData.append('subject', `New Job Abroad Application — ${data.surname} ${data.otherNames}`);
-    formData.append('from_name', `${data.surname} ${data.otherNames}`);
-    formData.append('email', data.email || 'no-email@applicant.com');
-    formData.append('to_email', 'manager@terrysome.com');
-
-    // Build plain text body
-    const body = Object.entries(data).map(([k,v]) => `${k}: ${v}`).join('\n');
-    formData.append('message', body);
-
-    // Try formsubmit.co
-    const res = await fetch('https://formsubmit.co/ajax/manager@terrysome.com', {
-      method: 'POST',
-      headers: { 'Accept': 'application/json' },
-      body: formData
-    });
-
-    let ok = false;
-    try { const j = await res.json(); ok = j.success; } catch(e) { ok = res.ok; }
+    await emailjs.send(
+      'service_terrysome',        // ← replace with your EmailJS Service ID
+      'template_terrysome_app',   // ← replace with your EmailJS Template ID
+      {
+        to_email:    'manager@terrysome.com',
+        from_name:   `${data.surname} ${data.otherNames}`,
+        reply_to:    data.email || 'noreply@terrysome.com',
+        subject:     `New Application — ${data.surname} ${data.otherNames} | ${data.phone}`,
+        message:     emailBody,
+        pdf_base64:  pdfBase64,
+        pdf_name:    pdfFilename,
+        applicant_phone: data.phone,
+        applicant_name:  `${data.surname} ${data.otherNames}`
+      }
+    );
 
     btn.disabled = false;
     btn.innerHTML = '📤 SEND MY APPLICATION';
+    showOverlay(
+      '🎉',
+      'Application Sent!',
+      `Thank you, ${data.surname}! Your application (including the PDF) has been sent to the Terrysome team. They will call you on ${data.phone} within 2–3 working days. A copy of your form has also been saved to your device.`
+    );
 
-    if (ok) {
-      showOverlay('🎉', 'Application Sent Successfully!',
-        `Thank you, ${data.surname}! Your application has been received by the Terrysome team. They will call you on ${data.phone} within 2–3 working days.`);
-      // Also download PDF for records
-      doc.save(`Terrysome_Application_${data.surname}_${data.otherNames}.pdf`);
-    } else {
-      // Fallback: download PDF and show instructions
-      doc.save(`Terrysome_Application_${data.surname}_${data.otherNames}.pdf`);
-      showOverlay('📄', 'Application Ready!',
-        `Your filled form has been saved as a PDF on your device. Please WhatsApp or email it to manager@terrysome.com or call 0706496674 to send it to the Terrysome team. We look forward to hearing from you!`);
-    }
   } catch(err) {
+    console.error('EmailJS error:', err);
     btn.disabled = false;
     btn.innerHTML = '📤 SEND MY APPLICATION';
-    doc.save(`Terrysome_Application_${data.surname}_${data.otherNames}.pdf`);
-    showOverlay('📄', 'Form Downloaded!',
-      `Your application has been saved as a PDF on your device. Please email it to manager@terrysome.com or call 0706496674 to submit it. Sorry for the inconvenience!`);
+    showOverlay(
+      '📄',
+      'PDF Saved — Please Send Manually',
+      `Your completed application has been saved as a PDF on your device (${pdfFilename}). Please WhatsApp or email it to manager@terrysome.com, or call 0706496674 to submit it. We are sorry for the inconvenience!`
+    );
   }
 }
 
